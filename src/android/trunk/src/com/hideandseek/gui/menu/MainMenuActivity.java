@@ -29,7 +29,7 @@ public class MainMenuActivity extends Activity {
 		findViewById(R.id.btStart).setOnClickListener(
 	        new OnClickListener() {
 	            public void onClick(View v) {
-	            	GameStateController.startNewGame();
+	            	GameStateController.startNewGame(MainMenuActivity.this);
 	            }
 	        }
         );

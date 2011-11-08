@@ -2,16 +2,30 @@ package com.hideandseek.maps;
 
 import java.util.Vector;
 
+import org.anddev.andengine.ui.activity.BaseGameActivity;
+
+import com.hideandseek.gameplay.Gameplay;
+import com.hideandseek.players.HiddenPlayer;
+
 /**
  * The genirc map
  * @author paulofernando
  *
  */
-public abstract class Map {
+public abstract class Map extends Gameplay {
 	
 	/** Vector of the positions where the objects was placed in the map*/
-	private Vector<LittleSquare> objectsPlaced; 
+	private Vector<LittleSquare> objectsPlaced;
+	
+	private HiddenPlayer hiddenPlayer;
+	
+	public Map(Vector<LittleSquare> objectsPlaced) {
+		this.objectsPlaced = objectsPlaced;
 		
+		//TODO to change the fixed values
+		hiddenPlayer = new HiddenPlayer(30f, 30f, Gameplay.mPlayerTextureRegion);
+		scene.getLastChild().attachChild(hiddenPlayer);
+	}
 	
 	public Vector<LittleSquare> getObjectsPlaced() {
 		return objectsPlaced;
@@ -28,7 +42,7 @@ public abstract class Map {
 	 * @author paulofernando
 	 *
 	 */
-	private class LittleSquare {
+	protected class LittleSquare {
 		
 		/** Height of the square */
 		private int height;
@@ -39,7 +53,6 @@ public abstract class Map {
 		private int type;
 		
 		/**
-		 * Get the type of the object placed in the square
 		 * @return Type of the object placed in the square
 		 */
 		public int getType() {

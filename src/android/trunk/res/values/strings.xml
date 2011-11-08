@@ -3,5 +3,9 @@
 
     <string name="hello">Hello World, HideAndSeekActivity!</string>
     <string name="app_name">Hide and Seek</string>
+    <string name="stBtStart">New Game</string>
+    <string name="stBtContinue">Continue</string>
+    <string name="stBtConfigurations">Configurations</string>
+    <string name="stLbTitle">Hide and Seek</string>
 
 </resources>

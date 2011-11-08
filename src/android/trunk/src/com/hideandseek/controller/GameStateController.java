@@ -1,5 +1,10 @@
 package com.hideandseek.controller;
 
+import com.hideandseek.gameplay.Gameplay;
+
+import android.app.Activity;
+import android.content.Intent;
+
 /**
  * Controls the actual state and the flow of the game
  * @author paulofernando
@@ -8,8 +13,10 @@ package com.hideandseek.controller;
 public class GameStateController {
 	
 	/** Start a new game */
-	public static void startNewGame() {
-		
+	public static void startNewGame(Activity screen) {
+		Intent i = new Intent(screen, Gameplay.class);
+		i.putExtra("type", "new");
+		screen.startActivity(i);
 	}
 	
 	/** Continues a old game */
