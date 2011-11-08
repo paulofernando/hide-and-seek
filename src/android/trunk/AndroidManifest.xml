@@ -26,8 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".gameplay.Gameplay">            
-        </activity>
+        <activity android:name=".gameplay.Gameplay"></activity>
+        <activity android:name=".maps.SimpleMap"></activity>
+        
     </application>
 
 </manifest>

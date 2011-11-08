@@ -1,24 +1,25 @@
 package com.hideandseek.players;
 
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
+import org.anddev.andengine.opengl.texture.region.TextureRegion;
 
 /**
  * The generic player
  * @author paulofernando
  *
  */
-public abstract class Player extends AnimatedSprite implements Walker {
+public abstract class Player extends Sprite implements Walker {
 
+	/** Milliseconds by frame of the texture */
+	protected int millisecondsByFrame = 150;
+	
 	/**
 	 * @param pX Position of the pigeon on the Axis X
 	 * @param pY Position of the pigeon on the Axis Y
 	 * @param pTextureRegion Texture of the pigeon
 	 */
-	public Player(float pX, float pY, TiledTextureRegion pTextureRegion) {
+	public Player(float pX, float pY, TextureRegion pTextureRegion) {
 		super(pX, pY, pTextureRegion);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected static int playerPosX;

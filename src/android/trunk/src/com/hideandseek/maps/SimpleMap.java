@@ -2,6 +2,9 @@ package com.hideandseek.maps;
 
 import java.util.Vector;
 
+import com.hideandseek.gameplay.Gameplay;
+import com.hideandseek.players.HiddenPlayer;
+
 /**
  * Map very simple with 3 areas to the player to hide
  * @author paulofernando
@@ -9,9 +12,16 @@ import java.util.Vector;
  */
 public class SimpleMap extends Map {
 
-	public SimpleMap(Vector<LittleSquare> objectsPlaced) {
-		super(objectsPlaced);
-		// TODO Auto-generated constructor stub
+	private HiddenPlayer hiddenPlayer;
+	
+	public SimpleMap() {
+		super();
+	}
+
+	@Override
+	public void onLoadResource() {
+		hiddenPlayer = new HiddenPlayer(30f, 30f, Gameplay.mPlayerTextureRegion);
+		scene.getLastChild().attachChild(hiddenPlayer);		
 	}
 
 }

@@ -1,9 +1,9 @@
 package com.hideandseek.controller;
 
-import com.hideandseek.gameplay.Gameplay;
-
 import android.app.Activity;
 import android.content.Intent;
+
+import com.hideandseek.maps.SimpleMap;
 
 /**
  * Controls the actual state and the flow of the game
@@ -14,7 +14,7 @@ public class GameStateController {
 	
 	/** Start a new game */
 	public static void startNewGame(Activity screen) {
-		Intent i = new Intent(screen, Gameplay.class);
+		Intent i = new Intent(screen, SimpleMap.class);
 		i.putExtra("type", "new");
 		screen.startActivity(i);
 	}

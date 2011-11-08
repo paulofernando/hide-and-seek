@@ -17,21 +17,20 @@ public abstract class Map extends Gameplay {
 	/** Vector of the positions where the objects was placed in the map*/
 	private Vector<LittleSquare> objectsPlaced;
 	
-	private HiddenPlayer hiddenPlayer;
-	
-	public Map(Vector<LittleSquare> objectsPlaced) {
-		this.objectsPlaced = objectsPlaced;
-		
-		//TODO to change the fixed values
-		hiddenPlayer = new HiddenPlayer(30f, 30f, Gameplay.mPlayerTextureRegion);
-		scene.getLastChild().attachChild(hiddenPlayer);
+	public Map() {
+		super();		
 	}
+	
+	public abstract void onLoadResource();
 	
 	public Vector<LittleSquare> getObjectsPlaced() {
 		return objectsPlaced;
 	}
 
-
+	/**
+	 * Sets up the objects and its positions in the map
+	 * @param objectsPlaced
+	 */
 	public void setObjectsPlaced(Vector<LittleSquare> objectsPlaced) {
 		this.objectsPlaced = objectsPlaced;
 	}
@@ -42,7 +41,7 @@ public abstract class Map extends Gameplay {
 	 * @author paulofernando
 	 *
 	 */
-	protected class LittleSquare {
+	public class LittleSquare {
 		
 		/** Height of the square */
 		private int height;
