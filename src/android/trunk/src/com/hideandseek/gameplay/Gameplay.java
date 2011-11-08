@@ -36,16 +36,15 @@ public class Gameplay extends BaseGameActivity {
 	@Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE,
-				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));	
+		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));	
 	}
 
 	@Override
 	public void onLoadResources() {
 		this.scene = new Scene(1);
-		this.mTexture = new Texture(1024, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+//		this.mTexture = new Texture(1024, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		
-		Gameplay.mPlayerTextureRegion = TextureRegionFactory.createTiledFromAsset(this.mTexture, this, "gfx/player.png", 0, 0, 0, 0);
+//		Gameplay.mPlayerTextureRegion = TextureRegionFactory.createTiledFromAsset(this.mTexture, this, "gfx/player.png", 0, 0, 0, 0);
 	}
 	
 	@Override
