@@ -3,12 +3,15 @@ package com.hideandseek.gameplay;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.camera.hud.HUD;
+import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.text.ChangeableText;
+import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
@@ -21,12 +24,14 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.view.KeyEvent;
 
 import com.hideandseek.players.HiddenPlayer;
+import com.hideandseek.players.Player;
 
-/** 
+/**
  * @author paulofernando
- *
+ * 
  */
 public class Gameplay extends BaseGameActivity {
 
@@ -34,57 +39,98 @@ public class Gameplay extends BaseGameActivity {
 	/** Informations on the screen */
 	private HUD hud;
 	private ChangeableText scoreText;
-	
-	public BitmapTextureAtlas mTexture;	
+
+	public BitmapTextureAtlas mTexture;
 	public static TextureRegion mPlayerTextureRegion;
-	protected Scene scene;
-	
+
 	private BitmapTextureAtlas mFontTexture;
 	private Font mFont;
-	
+
 	public static final int CAMERA_WIDTH = 720;
 	public static final int CAMERA_HEIGHT = 480;
+
+	private BitmapTextureAtlas mBitmapTextureAtlas;
+	private TiledTextureRegion mFaceTextureRegion;
 	
+	private HiddenPlayer hiddenPlayer;
+
 	public Gameplay() {
 		super();
 	}
-	
+
 	@Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));	
+		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE,
+				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+				this.mCamera));
 	}
 
 	@Override
 	public void onLoadResources() {
-		this.scene = new Scene();
-		
-		this.mTexture = new BitmapTextureAtlas(256, 64, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		Gameplay.mPlayerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mTexture, this, "gfx/player.png", 0, 0);
-        this.mEngine.getTextureManager().loadTexture(this.mTexture);
-        
-        // 	-------- Text -------
-		// this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		// this.mFont = new Font(this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 36, true, Color.WHITE);
-		// this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
-		// this.mEngine.getFontManager().loadFont(this.mFont);
- 		// ---------------------
+
+		this.mBitmapTextureAtlas = new BitmapTextureAtlas(64, 32,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		this.mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createTiledFromAsset(this.mBitmapTextureAtlas, this,
+						"face_circle_tiled.png", 0, 0, 2, 1);
+
+		this.mEngine.getTextureManager().loadTexture(this.mBitmapTextureAtlas);
+
+		// -------- Text -------
+		this.mFontTexture = new BitmapTextureAtlas(256, 256,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		this.mFont = new Font(this.mFontTexture, Typeface.create(
+				Typeface.DEFAULT, Typeface.BOLD), 36, true, Color.WHITE);
+		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
+		this.mEngine.getFontManager().loadFont(this.mFont);
+		// ---------------------
 	}
-	
+
 	@Override
 	public void onLoadComplete() {
-			
+
 	}
-	
 
 	@Override
 	public Scene onLoadScene() {
-		scene.setBackground(new ColorBackground(1, 0, 0));
+		final Scene scene = new Scene();
+		scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
+
+		this.scoreText = new ChangeableText(20, 10, this.mFont, "Score: ",
+				"Highcore: XXXXX".length());
+		scene.attachChild(scoreText);
+
+		this.mEngine.registerUpdateHandler(new FPSLogger());
+
+		final int centerX = (CAMERA_WIDTH - this.mFaceTextureRegion.getWidth()) / 2;
+		final int centerY = (CAMERA_HEIGHT - this.mFaceTextureRegion.getHeight()) / 2;
+		hiddenPlayer = new HiddenPlayer(centerX, centerY, this.mFaceTextureRegion);
 		
-		// this.scoreText = new ChangeableText(20, 10, this.mFont, "Score: ", "Highcore: XXXXX".length());
-		// scene.getLastChild().attachChild(scoreText);
-		
+		scene.attachChild(hiddenPlayer);
+
 		return scene;
+
+	}
+	
+	@Override
+	public boolean onKeyDown(final int pKeyCode, final KeyEvent pEvent) {
+		if(pEvent.getAction() == KeyEvent.ACTION_DOWN) {
+			if(pKeyCode == KeyEvent.KEYCODE_DPAD_UP) {
+				hiddenPlayer.moveUp();
+			} else if(pKeyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+				hiddenPlayer.moveDown();
+			} else if(pKeyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+				hiddenPlayer.moveLeft();
+			} else if(pKeyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+				hiddenPlayer.moveRight();
+			} else {
+				return super.onKeyDown(pKeyCode, pEvent);
+			}				
+			return true;
+		}
+		return super.onKeyDown(pKeyCode, pEvent);		
 	}
 
 }

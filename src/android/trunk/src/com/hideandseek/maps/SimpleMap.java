@@ -20,8 +20,7 @@ public class SimpleMap extends Map {
 
 	@Override
 	public void onLoadResource() {
-		hiddenPlayer = new HiddenPlayer(30f, 30f, Gameplay.mPlayerTextureRegion);
-		scene.getLastChild().attachChild(hiddenPlayer);		
+		
 	}
 
 }

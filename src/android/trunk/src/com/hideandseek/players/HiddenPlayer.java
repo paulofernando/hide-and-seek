@@ -1,12 +1,13 @@
 package com.hideandseek.players;
 
-import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 public class HiddenPlayer extends Player {
 
-	public HiddenPlayer(float pX, float pY, TextureRegion pTextureRegion) {
+	public HiddenPlayer(final float pX, final float pY, final TiledTextureRegion pTextureRegion) {
 		super(pX, pY, pTextureRegion);
-		// TODO Auto-generated constructor stub
 	}
-
+	
+	//TODO implementar a diferença entre os players
+	
 }

@@ -27,7 +27,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".gameplay.Gameplay"></activity>
-        <activity android:name=".maps.SimpleMap"></activity>
+        <activity android:name=".maps.SimpleMap"
+            android:screenOrientation="landscape"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
         
     </application>
 
