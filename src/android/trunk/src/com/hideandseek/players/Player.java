@@ -1,10 +1,8 @@
 package com.hideandseek.players;
 
+import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
-import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
-
-import android.view.KeyEvent;
 
 /**
  * The generic player
@@ -12,14 +10,19 @@ import android.view.KeyEvent;
  *
  */
 public abstract class Player extends AnimatedSprite implements Walker {
-
-	protected float myPosX;
-	protected float myPosY;
+	
+	protected float newPosX;
+	protected float newPosY;
+	
+	protected float startPosX;
+	protected float startPosY;
+	
+	protected final PhysicsHandler mPhysicsHandler;
 	
 	/** Milliseconds by frame of the texture */
 	protected int millisecondsByFrame = 150;
 	
-	private int velocity = 10;
+	private float velocity = 100f;
 	
 	/**
 	 * @param pX Position of the pigeon on the Axis X
@@ -28,36 +31,38 @@ public abstract class Player extends AnimatedSprite implements Walker {
 	 */
 	public Player(final float pX, final float pY, final TiledTextureRegion pTextureRegion) {
 		super(pX, pY, pTextureRegion);
-		myPosX = pX;
-		myPosY = pY;
+		newPosX = pX;
+		newPosY = pY;
+		
+		this.mPhysicsHandler = new PhysicsHandler(this);
+		this.registerUpdateHandler(this.mPhysicsHandler);
 	}
 	
 	@Override
-	public void moveUp() {
-		myPosY -= velocity;
-	}
-
-	@Override
-	public void moveDown() {
-		myPosY += velocity;		
-	}
-
-	@Override
-	public void moveLeft() {
-		myPosX -= velocity;
-	}
-
-	@Override
-	public void moveRight() {
-		myPosX += velocity;
+	public void move(float posX, float posY) {		 
+		newPosX = posX;
+		newPosY = posY;
+		startPosX = this.getX();
+		startPosY = this.getY();
 	}
 	
 	@Override
 	/** This method is called constantly. It's is called each interval of "pSecondsElapsed" */
-	 protected void onManagedUpdate(final float pSecondsElapsed) {  
-		this.setPosition(myPosX, myPosY);
+	 protected void onManagedUpdate(final float pSecondsElapsed) {
+		if ((Math.abs(newPosX - this.getX()) > 2) || (Math.abs(newPosY - this.getY()) > 2)) {
+			System.out.println("newX: " + newPosX + " posX: " + this.getX());
+			System.out.println("newY: " + newPosY + " posY: " + this.getY());
+			System.out.println("------");
+			
+//			if (Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) {
+				this.mPhysicsHandler.setVelocityX(this.velocity * (newPosX < this.getX() ? - 1: 1));		
+				this.mPhysicsHandler.setVelocityY((newPosY - this.getY()) * (this.getX()/newPosX));
+//			} else {
+//				this.mPhysicsHandler.setVelocityY(this.velocity * (newPosY < this.getY() ? - 1: 1));
+//				this.mPhysicsHandler.setVelocityX((newPosX - this.getX()) * (this.getY()/newPosY));
+//			}			
+		}
 		super.onManagedUpdate(pSecondsElapsed);
-	 	
 	 }	
 
 }

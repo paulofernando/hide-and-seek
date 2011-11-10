@@ -5,10 +5,6 @@ package com.hideandseek.players;
  * @author paulofernando
  *
  */
-public interface Walker {
-	
-	public void moveUp();
-	public void moveDown();
-	public void moveLeft();
-	public void moveRight();
+public interface Walker {	
+	public void move(float posX, float posY);
 }
