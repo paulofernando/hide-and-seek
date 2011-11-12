@@ -49,18 +49,14 @@ public abstract class Player extends AnimatedSprite implements Walker {
 	@Override
 	/** This method is called constantly. It's is called each interval of "pSecondsElapsed" */
 	 protected void onManagedUpdate(final float pSecondsElapsed) {
-		if ((Math.abs(newPosX - this.getX()) > 2) || (Math.abs(newPosY - this.getY()) > 2)) {
-			System.out.println("newX: " + newPosX + " posX: " + this.getX());
-			System.out.println("newY: " + newPosY + " posY: " + this.getY());
-			System.out.println("------");
-			
-//			if (Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) {
+		if ((Math.abs(newPosX - this.getX()) > 2) || (Math.abs(newPosY - this.getY()) > 2)) {			
+			if (Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) {
 				this.mPhysicsHandler.setVelocityX(this.velocity * (newPosX < this.getX() ? - 1: 1));		
 				this.mPhysicsHandler.setVelocityY((newPosY - this.getY()) * (this.getX()/newPosX));
-//			} else {
-//				this.mPhysicsHandler.setVelocityY(this.velocity * (newPosY < this.getY() ? - 1: 1));
-//				this.mPhysicsHandler.setVelocityX((newPosX - this.getX()) * (this.getY()/newPosY));
-//			}			
+			} else {
+				this.mPhysicsHandler.setVelocityY(this.velocity * (newPosY < this.getY() ? - 1: 1));
+				this.mPhysicsHandler.setVelocityX((newPosX - this.getX()) * (this.getY()/newPosY));
+			}			
 		}
 		super.onManagedUpdate(pSecondsElapsed);
 	 }	

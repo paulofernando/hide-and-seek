@@ -3,6 +3,7 @@ package com.hideandseek.maps;
 import java.util.Vector;
 
 import com.hideandseek.gameplay.Gameplay;
+import com.hideandseek.maps.Map.LittleSquare;
 import com.hideandseek.players.HiddenPlayer;
 
 /**
@@ -16,11 +17,11 @@ public class SimpleMap extends Map {
 	
 	public SimpleMap() {
 		super();
-	}
-
-	@Override
-	public void onLoadResource() {
 		
+		Vector<LittleSquare> objectsPlaced = new Vector();
+		
+		
+		this.setObjectsPlaced(objectsPlaced);
 	}
 
 }

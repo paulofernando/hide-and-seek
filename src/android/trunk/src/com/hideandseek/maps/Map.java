@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.graphics.PointF;
+
 import com.hideandseek.gameplay.Gameplay;
 import com.hideandseek.players.HiddenPlayer;
 
@@ -21,8 +23,7 @@ public abstract class Map extends Gameplay {
 		super();		
 	}
 	
-	public abstract void onLoadResource();
-	
+	/** @return list of the objects saved in the map */
 	public Vector<LittleSquare> getObjectsPlaced() {
 		return objectsPlaced;
 	}
@@ -47,9 +48,22 @@ public abstract class Map extends Gameplay {
 		private int height;
 		/** Width of the square	*/
 		private int width;
+		/** The object's position in the scene */		
+		private PointF position;
 		
 		/** Type of the object. Can be */
 		private int type;
+		
+		public LittleSquare(int width, int height, int type) {
+			this.width = width;
+			this.height = height;
+			this.type = type;
+		}
+		
+		public LittleSquare(int width, int height, int type, PointF position) {
+			this(width, height, type);
+			this.position = position;
+		}
 		
 		/**
 		 * @return Type of the object placed in the square
