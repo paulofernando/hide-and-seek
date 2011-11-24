@@ -3,10 +3,12 @@ package com.hideandseek.gameplay;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.camera.hud.HUD;
+import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.handler.runnable.RunnableHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnAreaTouchListener;
 import org.anddev.andengine.entity.scene.Scene.ITouchArea;
@@ -24,6 +26,7 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.view.Display;
 import android.view.MotionEvent;
 
 import com.hideandseek.players.HiddenPlayer;
@@ -32,9 +35,10 @@ import com.hideandseek.players.HiddenPlayer;
  * @author paulofernando
  * 
  */
-public class Gameplay extends BaseGameActivity {
+public abstract class Gameplay extends BaseGameActivity {
 
 	private Camera mCamera;
+	
 	/** Informations on the screen */
 	private HUD hud;
 	private ChangeableText scoreText;
@@ -45,13 +49,14 @@ public class Gameplay extends BaseGameActivity {
 	private BitmapTextureAtlas mFontTexture;
 	private Font mFont;
 
-	public static final int CAMERA_WIDTH = 720;
-	public static final int CAMERA_HEIGHT = 480;
+	public static int CAMERA_WIDTH;
+	public static int CAMERA_HEIGHT;
 
 	private BitmapTextureAtlas mBitmapTextureAtlas;
 	private TiledTextureRegion mFaceTextureRegion;
 	
-	private HiddenPlayer hiddenPlayer;
+	protected HiddenPlayer hiddenPlayer;
+	protected Scene scene;
 
 	public Gameplay() {
 		super();
@@ -59,6 +64,11 @@ public class Gameplay extends BaseGameActivity {
 
 	@Override
 	public Engine onLoadEngine() {
+		
+		final Display display = getWindowManager().getDefaultDisplay();
+		CAMERA_WIDTH = display.getWidth();
+		CAMERA_HEIGHT = display.getHeight();
+		
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE,
 				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
@@ -90,10 +100,10 @@ public class Gameplay extends BaseGameActivity {
 
 	@Override
 	public Scene onLoadScene() {
-		final Scene scene = new Scene();
+		scene = new Scene();
 		scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
 
-		this.scoreText = new ChangeableText(20, 10, this.mFont, "Score: ",
+		this.scoreText = new ChangeableText(20, 10, this.mFont, "Yahoooooo!",
 				"Highcore: XXXXX".length());
 		scene.attachChild(scoreText);
 
@@ -113,8 +123,7 @@ public class Gameplay extends BaseGameActivity {
 					Gameplay.this.mEngine.getScene().registerUpdateHandler(runnableHandler);
 					runnableHandler.postRunnable(new Runnable() {
 						@Override
-						public void run() {
-							System.out.println("Touched!");
+						public void run() {							
 							Gameplay.this.hiddenPlayer.move(pTouchAreaLocalX, pTouchAreaLocalY);
 						}
 					});
@@ -125,9 +134,14 @@ public class Gameplay extends BaseGameActivity {
 		});
 		scene.setTouchAreaBindingEnabled(true);
 		
+		createObjects();
+				
 		return scene;
-
 	}
+	
+	/** Where the objects that will be placed in the map are created */
+	protected abstract void createObjects();
+	
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {

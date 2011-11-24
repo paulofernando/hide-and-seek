@@ -2,22 +2,21 @@ package com.hideandseek.maps;
 
 import java.util.Vector;
 
-import org.anddev.andengine.ui.activity.BaseGameActivity;
-
-import android.graphics.PointF;
+import org.anddev.andengine.engine.handler.IUpdateHandler;
+import org.anddev.andengine.entity.scene.Scene;
 
 import com.hideandseek.gameplay.Gameplay;
-import com.hideandseek.players.HiddenPlayer;
+import com.hideandseek.maps.objects.LittleSquare;
 
 /**
- * The genirc map
+ * Generic map
  * @author paulofernando
  *
  */
 public abstract class Map extends Gameplay {
 	
 	/** Vector of the positions where the objects was placed in the map*/
-	private Vector<LittleSquare> objectsPlaced;
+	protected Vector<LittleSquare> objectsPlaced;
 	
 	public Map() {
 		super();		
@@ -35,63 +34,38 @@ public abstract class Map extends Gameplay {
 	public void setObjectsPlaced(Vector<LittleSquare> objectsPlaced) {
 		this.objectsPlaced = objectsPlaced;
 	}
-
-
-	/**
-	 * Square where can position a object in the map
-	 * @author paulofernando
-	 *
-	 */
-	public class LittleSquare {
-		
-		/** Height of the square */
-		private int height;
-		/** Width of the square	*/
-		private int width;
-		/** The object's position in the scene */		
-		private PointF position;
-		
-		/** Type of the object. Can be */
-		private int type;
-		
-		public LittleSquare(int width, int height, int type) {
-			this.width = width;
-			this.height = height;
-			this.type = type;
-		}
-		
-		public LittleSquare(int width, int height, int type, PointF position) {
-			this(width, height, type);
-			this.position = position;
-		}
-		
-		/**
-		 * @return Type of the object placed in the square
-		 */
-		public int getType() {
-			return type;
-		}
-		
-		/**
-		 * Defines the type of object. List of the types in com.hideandseek.maps.objects.Objects
-		 * @param type
-		 */
-		public void setType(int type) {
-			this.type = type;
-		}
-		
-		public int getHeight() {
-			return height;
-		}
-		public void setHeight(int height) {
-			this.height = height;
-		}
-		public int getWidth() {
-			return width;
-		}
-		public void setWidth(int width) {
-			this.width = width;
-		}
+	
+	@Override
+	public Scene onLoadScene() {		
+		Scene ret =  super.onLoadScene();
+		collisionModeOn();
+		return ret;
 	}
+
+	private void collisionModeOn() {
+		scene.registerUpdateHandler(new IUpdateHandler() {
+			@Override
+			public void reset() {}
+
+			@Override
+			public void onUpdate(final float pSecondsElapsed) {
+				if (collisionWithAnObject()) {
+					hiddenPlayer.stop(true);
+				}
+			}
+		});
+	}
+	
+	protected boolean collisionWithAnObject() {
+		for (LittleSquare obj : objectsPlaced) {
+			if (obj.getRectangle().collidesWith(hiddenPlayer)) {				
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+	
 
 }
