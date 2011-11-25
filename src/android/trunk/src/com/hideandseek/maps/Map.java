@@ -6,7 +6,7 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.entity.scene.Scene;
 
 import com.hideandseek.gameplay.Gameplay;
-import com.hideandseek.maps.objects.LittleSquare;
+import com.hideandseek.maps.objects.MarkedPosition;
 
 /**
  * Generic map
@@ -16,14 +16,14 @@ import com.hideandseek.maps.objects.LittleSquare;
 public abstract class Map extends Gameplay {
 	
 	/** Vector of the positions where the objects was placed in the map*/
-	protected Vector<LittleSquare> objectsPlaced;
+	protected Vector<MarkedPosition> objectsPlaced;
 	
 	public Map() {
 		super();		
 	}
 	
 	/** @return list of the objects saved in the map */
-	public Vector<LittleSquare> getObjectsPlaced() {
+	public Vector<MarkedPosition> getObjectsPlaced() {
 		return objectsPlaced;
 	}
 
@@ -31,7 +31,7 @@ public abstract class Map extends Gameplay {
 	 * Sets up the objects and its positions in the map
 	 * @param objectsPlaced
 	 */
-	public void setObjectsPlaced(Vector<LittleSquare> objectsPlaced) {
+	public void setObjectsPlaced(Vector<MarkedPosition> objectsPlaced) {
 		this.objectsPlaced = objectsPlaced;
 	}
 	
@@ -57,15 +57,13 @@ public abstract class Map extends Gameplay {
 	}
 	
 	protected boolean collisionWithAnObject() {
-		for (LittleSquare obj : objectsPlaced) {
+		for (MarkedPosition obj : objectsPlaced) {
 			if (obj.getRectangle().collidesWith(hiddenPlayer)) {				
 				return true;
 			}
 		}
 		return false;
 	}
-	
-
 	
 
 }
