@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".gameplay.Gameplay"></activity>
-        <activity android:name=".maps.SimpleMap"
+        <activity android:name=".stages.Stage1"
             android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
         

@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import com.hideandseek.exceptions.InvalidMapException;
+import com.hideandseek.maps.objects.MarkedPosition;
+import com.hideandseek.maps.objects.Objects;
 
 import android.graphics.Point;
+import android.graphics.PointF;
 
 /**
  * Simple map to create
@@ -14,6 +17,8 @@ import android.graphics.Point;
  */
 public class SimpleDivisibleMap extends Map {
 
+	/** Width of the wall */
+	private static final int markedPlaceWidth = 20;
 	
 	private HashMap<String, Point[]> areas;
 	
@@ -23,15 +28,14 @@ public class SimpleDivisibleMap extends Map {
 	 * @param areas Map with all the areas in the map. Each record in the map must be the name identifier of the area
 	 * and the area (the vector with two Points)
 	 */
-	public SimpleDivisibleMap(HashMap<String, Point[]> areas) throws InvalidMapException {
-		super();
+	public void setWalls(HashMap<String, Point[]> areas) throws InvalidMapException {
 		this.areas = areas;
 		
 		if(!validateMap()) throw new InvalidMapException();
 		riseUpTheWall();
 	}
 	
-	/** Verifies if the map is a valid map	
+	/** Verifies if the map is a valid map.
 	 * @return true if a map is a valid map
 	 */
 	private boolean validateMap() {
@@ -53,12 +57,28 @@ public class SimpleDivisibleMap extends Map {
 	
 	/** Builds the walls */
 	private void riseUpTheWall() {
-		
+		objectsPlaced = new Vector<MarkedPosition>();
+		for (Point[] area: areas.values()) {
+			//left wall
+			objectsPlaced.add(new MarkedPosition(markedPlaceWidth, area[1].y - area[0].y, Objects.OBJECT_WALL, new PointF(area[0].x, area[0].y)));
+			
+			//up wall
+			objectsPlaced.add(new MarkedPosition(area[1].x - area[0].x, markedPlaceWidth, Objects.OBJECT_WALL, new PointF(area[0].x, area[0].y)));
+			
+			//right wall
+			objectsPlaced.add(new MarkedPosition(markedPlaceWidth, area[1].y - area[0].y + markedPlaceWidth, Objects.OBJECT_WALL, new PointF(area[1].x, area[0].y)));
+			
+			//bottom wall
+			objectsPlaced.add(new MarkedPosition(area[1].x - area[0].x, markedPlaceWidth, Objects.OBJECT_WALL, new PointF(area[0].x, area[1].y)));
+		}		
+		this.setObjectsPlaced(objectsPlaced);
 	}
 	
 	@Override
 	protected void createObjects() {
-		
+		for (MarkedPosition obj : objectsPlaced) {
+			scene.attachChild(obj.getRectangle());
+		}
 	}
 
 }

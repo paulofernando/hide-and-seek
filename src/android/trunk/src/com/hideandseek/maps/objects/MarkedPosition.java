@@ -11,9 +11,9 @@ import android.graphics.PointF;
  */
 public class MarkedPosition {
 	
-	/** Height of the square */
+	/** Height of the rectangle */
 	private int height;
-	/** Width of the square	*/
+	/** Width of the rectangle	*/
 	private int width;
 	/** The object's position in the scene */		
 	private PointF position;
@@ -23,6 +23,13 @@ public class MarkedPosition {
 	
 	private Rectangle rect;
 		
+	/**
+	 * Instances a new rectangle to position an object
+	 * @param width Width of the rectangle
+	 * @param height Height of the rectangle
+	 * @param type Type of the object
+	 * @param position The object's position in the scene
+	 */
 	public MarkedPosition(int width, int height, int type, PointF position) {
 		this.width = width;
 		this.height = height;
