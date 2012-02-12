@@ -4,6 +4,8 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.util.Log;
+
 /**
  * The generic player
  * @author paulofernando
@@ -12,13 +14,21 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 public abstract class Player extends AnimatedSprite implements Walker {
 	
 	/** New position in axis X to the Player */
-	protected float newPosX;
+	protected float newPosX;		
+	/** Current position in axis X to the Player when he moves */
+	protected float currentPosX;
+	/** Previous position */
+	protected float previousPosX;
+	
+	protected float startPosX;
+	
 	/** New position in axis Y to the Player */
 	protected float newPosY;
+	/** Current position in axis Y to the Player when he moves */
+	protected float currentPosY;
+	/** Previous position */
+	protected float previousPosY;
 	
-	/** Started position in axis X to the Player when he moves */
-	protected float startPosX;
-	/** Started position in axis Y to the Player when he moves */
 	protected float startPosY;
 	
 	protected final PhysicsHandler mPhysicsHandler;
@@ -26,9 +36,11 @@ public abstract class Player extends AnimatedSprite implements Walker {
 	/** Milliseconds by frame of the texture */
 	protected int millisecondsByFrame = 150;
 	
-	private float velocity = 100f;
+	private float velocity = 100f; // 100px/s
 	
 	private boolean stoped = true;
+	
+	private long initialTime, elapsedTime, finalTime;
 	
 	/**
 	 * @param pX Position of the pigeon on the Axis X
@@ -45,22 +57,27 @@ public abstract class Player extends AnimatedSprite implements Walker {
 	}
 	
 	@Override
-	public void move(float posX, float posY) {		 
+	public void move(float posX, float posY) {	
+		initialTime = System.currentTimeMillis();
+		elapsedTime = 0L;
+		finalTime = (long)((Math.max(Math.abs(posX - this.getX()), Math.abs(posY - this.getY()))/velocity) * 1000);
+		
 		newPosX = posX;
 		newPosY = posY;
-		startPosX = this.getX();
-		startPosY = this.getY();
+		startPosX = currentPosX = this.getX();
+		startPosY = currentPosY = this.getY();
+		
 		stoped = false;
 	}
 	
 	public void stop(boolean collided) {		
 		if(collided) {
-			newPosX = (startPosX > this.getX() ? this.getX() + 5 : this.getX() - 5);
-			newPosY = (startPosY > this.getY() ? this.getY() + 5 : this.getY() - 5);
+			newPosX = (currentPosX > this.getX() ? this.getX() + 5 : this.getX() - 5);
+			newPosY = (currentPosY > this.getY() ? this.getY() + 5 : this.getY() - 5);
 			this.setPosition(newPosX, newPosY);
 		} else {
-			newPosX = startPosX = this.getX();
-			newPosY = startPosY = this.getY();
+			newPosX = currentPosX = this.getX();
+			newPosY = currentPosY = this.getY();
 		}
 		stoped = true;
 	}
@@ -68,15 +85,20 @@ public abstract class Player extends AnimatedSprite implements Walker {
 	@Override
 	/** This method is called constantly. It's is called each interval of "pSecondsElapsed" */
 	 protected void onManagedUpdate(final float pSecondsElapsed) {		
-		if (((Math.abs(newPosX - this.getX()) > 10) || (Math.abs(newPosY - this.getY()) > 10)) && (!stoped)) {			
-			if (Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) {
-				this.mPhysicsHandler.setVelocityY(this.velocity * (newPosY < this.getY() ? - 1: 1));
-				this.mPhysicsHandler.setVelocityX((newPosX - this.getX()) * (this.getY()/newPosY));
-			} else {
-				this.mPhysicsHandler.setVelocityX(this.velocity * (newPosX < this.getX() ? - 1: 1));		
-				this.mPhysicsHandler.setVelocityY((newPosY - this.getY()) * (this.getX()/newPosX));
-				
-			}			
+//		if (((Math.abs(newPosX - this.getX()) > 10) || (Math.abs(newPosY - this.getY()) > 10)) && (!stoped)) {
+		if ((!stoped) && (elapsedTime < finalTime)) {
+			elapsedTime = System.currentTimeMillis() - initialTime;
+			
+			previousPosX = currentPosX;
+			previousPosY = currentPosY;
+			currentPosX = (float)((elapsedTime * Math.abs(newPosX - startPosX)/finalTime));
+			currentPosY = (float)((elapsedTime * Math.abs(newPosY - startPosY)/finalTime));
+			
+			currentPosX = (((Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) && (newPosX < this.getX())) ? -1 : 1) * currentPosX + this.getX();
+			currentPosY = (((Math.abs(newPosX - this.getX()) > Math.abs(newPosY - this.getY())) && (newPosY < this.getY())) ? -1 : 1) * currentPosY + this.getY();
+			Log.i("pos", "x: " + currentPosX + " e y: " + currentPosY + " | elapsed: " + elapsedTime);
+			
+			this.setPosition(currentPosX, currentPosY);			
 		} else {
 			this.mPhysicsHandler.setVelocityY(0.f);
 			this.mPhysicsHandler.setVelocityX(0.f);
