@@ -5,7 +5,7 @@ import org.anddev.andengine.entity.primitive.Rectangle;
 import android.graphics.PointF;
 
 /**
- * Rectangle where can position a object in the map
+ * Rectangle where can position an object in the map
  * @author paulofernando
  *
  */
